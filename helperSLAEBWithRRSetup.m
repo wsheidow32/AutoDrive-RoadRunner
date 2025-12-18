@@ -123,7 +123,8 @@ if ~isempty(scenarioSimulationObj)
 end
 
 % Create AEB buses
-helperCreateAEBBusObjects("numTargetActors",numActors-1,"refPathSize",1000);
+%helperCreateAEBBusObjects("numTargetActors",numActors-1,"refPathSize",1000);
+evalin('base', sprintf('helperCreateAEBBusObjects("numTargetActors", %d, "refPathSize", 1000)', numActors-1));
 
 assignin('base', 'maxNumActors', numActors);
 assignin('base', 'numTargetActors',  numActors-1);
