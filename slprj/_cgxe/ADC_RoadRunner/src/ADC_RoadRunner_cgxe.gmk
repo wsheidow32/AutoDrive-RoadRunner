@@ -16,14 +16,14 @@ MATLAB_ROOT  = c:\program files\matlab\r2024b\toolbox\stateflow\stateflow\..\..\
 BUILDARGS   = 
 #------------------------------ Include/Lib Path ------------------------------
  
-USER_INCLUDES = -I"C:\Users\wshei\OneDrive\Desktop\RR2025\RoadRunner 2025-26" -I"C:\Users\wshei\OneDrive\Desktop\RR2025\RoadRunner 2025-26\Misc Models" -I"C:\Users\wshei\OneDrive\Desktop\RR2025\RoadRunner 2025-26\slprj\_cprj" 
+USER_INCLUDES = -I"C:\Users\wshei\OneDrive\Documents\GitHub\AutoDrive-RoadRunner" -I"C:\Users\wshei\OneDrive\Documents\GitHub\AutoDrive-RoadRunner\Misc Models" -I"C:\Users\wshei\OneDrive\Documents\GitHub\AutoDrive-RoadRunner\slprj\_cprj" 
 AUX_INCLUDES = 
 MLSLSF_INCLUDES  = \
     -I"C:\Program Files\MATLAB\R2024b\extern\include" \
     -I"C:\Program Files\MATLAB\R2024b\simulink\include" \
     -I"C:\Program Files\MATLAB\R2024b\rtw\c\src" 
 
-THIRD_PARTY_INCLUDES = -I"C:\Users\wshei\OneDrive\Desktop\RR2025\RoadRunner 2025-26\slprj\_cgxe\ADC_RoadRunner\src" -I"C:\Program Files\MATLAB\R2024b\extern\include\ssfcodegen" -I"C:\Program Files\MATLAB\R2024b\extern\lib\win64\mingw64" 
+THIRD_PARTY_INCLUDES = -I"C:\Users\wshei\OneDrive\Documents\GitHub\AutoDrive-RoadRunner\slprj\_cgxe\ADC_RoadRunner\src" -I"C:\Program Files\MATLAB\R2024b\extern\include\ssfcodegen" -I"C:\Program Files\MATLAB\R2024b\extern\lib\win64\mingw64" 
 
 INCLUDE_PATH = $(USER_INCLUDES) $(AUX_INCLUDES) $(MLSLSF_INCLUDES) $(COMPILER_INCLUDES) $(THIRD_PARTY_INCLUDES)
  
