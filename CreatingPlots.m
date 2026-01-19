@@ -69,6 +69,8 @@ end
 % Save the plot as a PNG file
 saveas(fig, fullfile(folderName, [fileNameWithOutExt, '_', num2str(n), '_Map', '.png']));
 
+PositionError = out.PositionError;
+
 % Creating Lane Position Error Plot
 fig = figure('Visible', 'off');
 plot(PositionError.Time, PositionError.Data, 'LineWidth', 1.5);
