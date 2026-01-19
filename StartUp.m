@@ -37,6 +37,14 @@ for i = 1:numel(p.SceneTypes)
     end
 end
 
+n = 1;
+
+runs = repmat(struct('RunID', [], ...
+                 'scenario',   "", ...
+                 'TotalActors',  [], ...
+                 'results',   [], ...
+                 'failFlag', []), 1, n);
+
 %% Open Model
 
 prjFile = fullfile(rrProjectPath, 'Projects.prj'); 
@@ -49,12 +57,12 @@ else
 end
 
 warning('off','all')
-open("ADC_RoadRunner.slx")
+open(fullfile(rrProjectPath, "Misc Models", "ADC_RoadRunner.slx"))
 set_param('ADC_RoadRunner', 'SolverType', 'Variable-step');
 set_param('ADC_RoadRunner', 'Solver', 'ode23tb');
 %% Open RoadRunner Project Files
-
-for n = 1:numel(rrScenarios)
+for n = 1
+%for n = 1:numel(rrScenarios)
     
     %Get Scenario Name Details
     [~, name, ext] = fileparts(rrScenarios{n}); % fileparts returns [path, name, extension]
@@ -103,7 +111,7 @@ for n = 1:numel(rrScenarios)
 
     set(rrSim, 'Logging','on');
     
-    SimulationLength = 20;
+    SimulationLength = 2;
     set(rrSim, MaxSimulationTime=SimulationLength);
     
     Ts = 0.05; 
@@ -118,12 +126,15 @@ for n = 1:numel(rrScenarios)
     % 1 2 3 4 ... 10 11 12: display values to check execution in helperSLAEBWithRRSetup script
     helperSLAEBWithRRSetup(rrApp, rrSim, scenarioFileName=fileNameWithOutExt)  % read scenario and create actorProfiles,cameraParams,radarParams
 %% Simulation
-
     
     set(rrSim,SimulationCommand="Start")
     while strcmp(rrSim.get("SimulationStatus"), "Running")
       pause(1)
     end
+
+    run('SavingSimulationData.m')
+    run('CreatingPlots.m')
+
 %% Close RoadRunner
     fprintf("Scenario " + n + " run")
     fprintf(fileNameWithOutExt)
