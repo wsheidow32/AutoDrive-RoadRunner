@@ -109,7 +109,7 @@ for n = 1:numel(rrScenarios)
 
     set(rrSim, 'Logging','on');
     
-    SimulationLength = 20;
+    SimulationLength = 15;
     set(rrSim, MaxSimulationTime=SimulationLength);
     
     Ts = 0.05; 
