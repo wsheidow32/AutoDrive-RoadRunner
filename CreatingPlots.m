@@ -81,7 +81,7 @@ grid on;
 xlabel('Time (s)');
 ylabel('Position Error (m)');
 title('Position Error vs Time');
-yline(0.3, 'r', 'Threshold Value');
+yline(0.3, 'r', 'Threshold Value', 'LabelHorizontalAlignment', 'left');
 
 % Variable to Save Fail
 failFlag = 0;

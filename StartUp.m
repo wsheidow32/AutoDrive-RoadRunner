@@ -76,8 +76,8 @@ open(fullfile(rrProjectPath, "Misc Models", "ADC_RoadRunner.slx"))
 set_param('ADC_RoadRunner', 'SolverType', 'Variable-step');
 set_param('ADC_RoadRunner', 'Solver', 'ode23tb');
 %% Open RoadRunner Project Files
-for n = 1:5
-%for n = 1:numel(rrScenarios)
+
+for n = 1:numel(rrScenarios)
     
     %Get Scenario Name Details
     [~, name, ext] = fileparts(rrScenarios{n}); % fileparts returns [path, name, extension]
@@ -149,7 +149,7 @@ for n = 1:5
 
     run('SavingSimulationData.m')
     run('CreatingPlots.m')
-    run('Trajectory_Smoothness.m')
+    %run('Trajectory_Smoothness.m')
 
 %% Close RoadRunner
     fprintf("Scenario " + n + " run")
