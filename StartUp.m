@@ -13,6 +13,11 @@ addpath(rrAppPath);
 
 rrProjectPath = strtrim(fileread('SelectedProjectPath.txt'));
 
+% Delete Existing Plots Folder
+if exist('Plots', 'dir')
+    rmdir('Plots', 's');
+end
+
 busData = load(fullfile(rrProjectPath, 'BusWorldToVehicleActors/3/BusWorldToVehicleActors.mat'));
 varNames = fieldnames(busData);
 for i = 1:numel(varNames)

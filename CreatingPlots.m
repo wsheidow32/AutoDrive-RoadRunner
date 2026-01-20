@@ -4,9 +4,6 @@ PassFolder = 'Pass';
 FailFolder = 'Fail';
 OtherFolder = "Speed and Map";
 
-% Delete Existing
-rmdir(folderName, 's')
-
 % Creating Folders
 mkdir(folderName, PassFolder)
 mkdir(folderName, FailFolder)
@@ -84,7 +81,7 @@ grid on;
 xlabel('Time (s)');
 ylabel('Position Error (m)');
 title('Position Error vs Time');
-yline(0.3, r, 'Threshold Value');
+yline(0.3, 'r', 'Threshold Value');
 
 if any(abs(PositionError.Data) > 0.3)
     PassFail = 'Fail';
