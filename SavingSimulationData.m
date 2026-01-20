@@ -45,13 +45,6 @@ for k = 1:numActors
     results(k).posY    = posYK';
 end
 
-% Create Fail Metrics
-if n == 1
-    failFlag = 1;
-else
-    failFlag = 0;
-end
-
 % Storing data
 runs(n).RunID = n;
 runs(n).scenario = fileNameWithOutExt;
