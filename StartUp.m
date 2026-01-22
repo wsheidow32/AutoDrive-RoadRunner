@@ -128,6 +128,11 @@ for m = 1:numel(rrScenarios)
         SimulationLength = 15;
         set(rrSim, MaxSimulationTime=SimulationLength);
         
+        %set Actor 2 if GUI wants random placement
+        if p.Randomize
+            random_actor_generation
+        end
+        
         Ts = 0.05; 
         STEER_RATIO = -0.0582;
         LaneWidth = 3.85;
