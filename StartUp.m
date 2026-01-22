@@ -1,7 +1,7 @@
 %clear; close; clc;
 clc;
 restoredefaultpath;
-
+%hello
 %% Initialize Values
 
 project_start; % calls car_params.mlx
