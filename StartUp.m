@@ -5,13 +5,18 @@ restoredefaultpath;
 %% Initialize Values
 
 project_start; % calls car_params.mlx
-p = load('parameter.mat'); % calls car_params.mlx
+p = load('parameter.mat');
 assignin('base', 'p', p);
 
 rrAppPath = strtrim(fileread('SelectedInstallationPath.txt'));
 addpath(rrAppPath);
 
 rrProjectPath = strtrim(fileread('SelectedProjectPath.txt'));
+
+% Delete Existing Plots Folder
+if exist('Plots', 'dir')
+    rmdir('Plots', 's');
+end
 
 busData = load(fullfile(rrProjectPath, 'BusWorldToVehicleActors/3/BusWorldToVehicleActors.mat'));
 varNames = fieldnames(busData);
@@ -37,12 +42,23 @@ for i = 1:numel(p.SceneTypes)
     end
 end
 
+% Initializng Data Matrixes
 n = 1;
+TotalFails = 0;
 runs = repmat(struct('RunID', [], ...
                  'scenario',   "", ...
                  'TotalActors',  [], ...
                  'results',   [], ...
                  'failFlag', []), 1, n);
+
+fails = repmat(struct('RunID', [], ...
+                 'scenario',   "", ...
+                 'TotalActors',  [], ...
+                 'results',   [], ...
+                 'LanePosition', [], ...
+                 'Acceleration', [], ...
+                 'Curvature', [], ...
+                 'Jerk', []), 1, n);
 
 %% Open Model
 
@@ -60,82 +76,85 @@ open(fullfile(rrProjectPath, "Misc Models", "ADC_RoadRunner.slx"))
 set_param('ADC_RoadRunner', 'SolverType', 'Variable-step');
 set_param('ADC_RoadRunner', 'Solver', 'ode23tb');
 %% Open RoadRunner Project Files
-for n = 1:numel(rrScenarios)
+for m = 1:numel(rrScenarios)
+    for k = 0:p.RepeatCount
+        %Get Scenario Name Details
+        [~, name, ext] = fileparts(rrScenarios{m}); % fileparts returns [path, name, extension]
+        fileNameWithOutExt = [name]; % Just scenario file name
+        fileNameWithOutExt = fileNameWithOutExt(fileNameWithOutExt ~= ' ');
+        fileNameWithExt = [name, ext]; % Combine scenario name and extension
+        fileNameWithExt = fileNameWithExt(fileNameWithExt ~= ' ');
     
-    %Get Scenario Name Details
-    [~, name, ext] = fileparts(rrScenarios{n}); % fileparts returns [path, name, extension]
-    fileNameWithOutExt = [name]; % Just scenario file name
-    fileNameWithOutExt = fileNameWithOutExt(fileNameWithOutExt ~= ' ');
-    fileNameWithExt = [name, ext]; % Combine scenario name and extension
-    fileNameWithExt = fileNameWithExt(fileNameWithExt ~= ' ');
-
-    s = settings;
-    s.roadrunner.application.InstallationFolder.TemporaryValue = rrAppPath;
-
-    busInfoData = load('businfo.mat');
-    varNamesBus = fieldnames(busInfoData);
-    for i = 1:numel(varNamesBus)
-        assignin('base', varNamesBus{i}, busInfoData.(varNamesBus{i}));
-    end
-
-    currentScenarioPath = rrScenarios{n};
-    matchedScene = '';
+        s = settings;
+        s.roadrunner.application.InstallationFolder.TemporaryValue = rrAppPath;
     
-    for s_idx = 1:numel(p.SceneTypes)
-        % Check for both the version with spaces and without
-        cleanName = p.SceneTypes{s_idx};
-        cleanName = cleanName(cleanName ~= ' ');
-        
-        if contains(currentScenarioPath, cleanName) || contains(currentScenarioPath, p.SceneTypes{s_idx})
-            % Use the original name from p.SceneTypes to match the folder on disk
-            matchedScene = p.SceneTypes{s_idx}; 
-            break;
+        busInfoData = load('businfo.mat');
+        varNamesBus = fieldnames(busInfoData);
+        for i = 1:numel(varNamesBus)
+            assignin('base', varNamesBus{i}, busInfoData.(varNamesBus{i}));
         end
-    end
-
-    % Construct the path to the SPECIFIC scene project
-    rrProjectPath_Final = fullfile(rrProjectPath, 'Projects', matchedScene);
     
-    % Verify the path exists before calling roadrunner()
-    if ~exist(rrProjectPath_Final, 'dir')
-        error('Project folder not found: %s. Check if folder name matches GUI selection.', rrProjectPath_Final);
-    end
-
-    rrApp = roadrunner(rrProjectPath_Final);
-
-    openScenario(rrApp,fileNameWithExt);
-    rrSim = rrApp.createSimulation;
+        currentScenarioPath = rrScenarios{m};
+        matchedScene = '';
+        
+        for s_idx = 1:numel(p.SceneTypes)
+            % Check for both the version with spaces and without
+            cleanName = p.SceneTypes{s_idx};
+            cleanName = cleanName(cleanName ~= ' ');
+            
+            if contains(currentScenarioPath, cleanName) || contains(currentScenarioPath, p.SceneTypes{s_idx})
+                % Use the original name from p.SceneTypes to match the folder on disk
+                matchedScene = p.SceneTypes{s_idx}; 
+                break;
+            end
+        end
+    
+        % Construct the path to the SPECIFIC scene project
+        rrProjectPath_Final = fullfile(rrProjectPath, 'Projects', matchedScene);
+        
+        % Verify the path exists before calling roadrunner()
+        if ~exist(rrProjectPath_Final, 'dir')
+            error('Project folder not found: %s. Check if folder name matches GUI selection.', rrProjectPath_Final);
+        end
+    
+        rrApp = roadrunner(rrProjectPath_Final);
+    
+        openScenario(rrApp,fileNameWithExt);
+        rrSim = rrApp.createSimulation;
 %% RoadRunner Scenario Data, Simulation Time
-
-    set(rrSim, 'Logging','on');
     
-    SimulationLength = 20;
-    set(rrSim, MaxSimulationTime=SimulationLength);
+        set(rrSim, 'Logging','on');
+        
+        SimulationLength = 15;
+        set(rrSim, MaxSimulationTime=SimulationLength);
+        
+        Ts = 0.05; 
+        STEER_RATIO = -0.0582;
+        LaneWidth = 3.85;
     
-    Ts = 0.05; 
-    STEER_RATIO = -0.0582;
-    LaneWidth = 3.85;
-
-    assignin('base', 'Ts', Ts);
-    assignin('base', 'STEER_RATIO', STEER_RATIO);
-    assignin('base', 'LaneWidth', LaneWidth);
-    
-    
-    % 1 2 3 4 ... 10 11 12: display values to check execution in helperSLAEBWithRRSetup script
-    helperSLAEBWithRRSetup(rrApp, rrSim, scenarioFileName=fileNameWithOutExt)  % read scenario and create actorProfiles,cameraParams,radarParams
+        assignin('base', 'Ts', Ts);
+        assignin('base', 'STEER_RATIO', STEER_RATIO);
+        assignin('base', 'LaneWidth', LaneWidth);
+        
+        
+        % 1 2 3 4 ... 10 11 12: display values to check execution in helperSLAEBWithRRSetup script
+        helperSLAEBWithRRSetup(rrApp, rrSim, scenarioFileName=fileNameWithOutExt)  % read scenario and create actorProfiles,cameraParams,radarParams
 %% Simulation
+        
+        set(rrSim,SimulationCommand="Start")
+        while strcmp(rrSim.get("SimulationStatus"), "Running")
+          pause(1)
+        end
     
-    set(rrSim,SimulationCommand="Start")
-    while strcmp(rrSim.get("SimulationStatus"), "Running")
-      pause(1)
-    end
-
-    run('SavingSimulationData.m')
-    run('CreatingPlots.m')
-
+        run('SavingSimulationData.m')
+        run('CreatingPlots.m')
+        %run('Trajectory_Smoothness.m')
+    
 %% Close RoadRunner
-    fprintf("Scenario " + n + " run")
-    fprintf(fileNameWithOutExt)
-    close(rrApp)
+        fprintf("Scenario " + n + " run")
+        fprintf(fileNameWithOutExt)
+        close(rrApp)
 
+        n = n + 1;
+    end
 end

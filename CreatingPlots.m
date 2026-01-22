@@ -1,10 +1,13 @@
-% Creating Folder
+% Naming Folders
 folderName = 'Plots';
+PassFolder = 'Pass';
+FailFolder = 'Fail';
+OtherFolder = "Speed and Map";
 
-% Checking if Folder Exist
-if ~exist(folderName, 'dir')
-    mkdir(folderName);
-end
+% Creating Folders
+mkdir(folderName, PassFolder)
+mkdir(folderName, FailFolder)
+mkdir(folderName, OtherFolder)
 
 % Speed vs Time Graph
 fig = figure('Visible', 'off');
@@ -25,7 +28,7 @@ if ~isempty(actorIDs_plots)
 end
 
 % Save the plot as a PNG file
-saveas(fig, fullfile(folderName, [fileNameWithOutExt, '_', num2str(n), '_Speeds', '.png']));
+saveas(fig, fullfile(fullfile(folderName, OtherFolder), [fileNameWithOutExt, '_', num2str(n), '_Speeds', '.png']));
 
 % HD Map Lanes
 hdMap = get(rrSim, "Map");
@@ -67,7 +70,7 @@ if ~isempty(laneHandle) && numActors_plots > 0
 end
 
 % Save the plot as a PNG file
-saveas(fig, fullfile(folderName, [fileNameWithOutExt, '_', num2str(n), '_Map', '.png']));
+saveas(fig, fullfile(fullfile(folderName, OtherFolder), [fileNameWithOutExt, '_', num2str(n), '_Map', '.png']));
 
 PositionError = out.PositionError;
 
@@ -78,11 +81,21 @@ grid on;
 xlabel('Time (s)');
 ylabel('Position Error (m)');
 title('Position Error vs Time');
+yline(0.3, 'r', 'Threshold Value', 'LabelHorizontalAlignment', 'left');
 
+% Checking Threshold
 if any(abs(PositionError.Data) > 0.3)
     PassFail = 'Fail';
+    failFlag = 1;
+
+    % Adding to Fail Matrix
+    TotalFails = TotalFails + 1;
+    fails(TotalFails).LanePosition = 1;
+
 else
     PassFail = 'Pass';
 end
 
-saveas(fig, fullfile(folderName, [fileNameWithOutExt, '_', num2str(n), '_LanePosition_', PassFail, '.png']));
+runs(n).failFlag = failFlag;
+
+saveas(fig, fullfile(fullfile(folderName, PassFail), [fileNameWithOutExt, '_', num2str(n), '_LanePosition_', PassFail, '.png']));
