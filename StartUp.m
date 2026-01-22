@@ -130,7 +130,7 @@ for m = 1:numel(rrScenarios)
         
         %set Actor 2 if GUI wants random placement
         if p.Randomize
-            random_actor_generation
+            %random_actor_generation;
         end
         
         Ts = 0.05; 
