@@ -45,6 +45,9 @@ for k = 1:numActors
     results(k).posY    = posYK';
 end
 
+% Variable to Save Fail
+failFlag = 0;
+
 % Storing data
 runs(n).RunID = n;
 runs(n).scenario = fileNameWithOutExt;

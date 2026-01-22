@@ -83,9 +83,6 @@ ylabel('Position Error (m)');
 title('Position Error vs Time');
 yline(0.3, 'r', 'Threshold Value', 'LabelHorizontalAlignment', 'left');
 
-% Variable to Save Fail
-failFlag = 0;
-
 % Checking Threshold
 if any(abs(PositionError.Data) > 0.3)
     PassFail = 'Fail';
