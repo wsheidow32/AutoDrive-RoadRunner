@@ -29,15 +29,21 @@ idx = 1;
 
 for i = 1:numel(p.SceneTypes)
     sceneName = p.SceneTypes{i};
-    sceneName = sceneName(sceneName ~= ' '); % Clean whitespace
+    sceneNameNoSpaces = sceneName(sceneName ~= ' '); % Clean whitespace
+    addpath(fullfile(rrProjectPath, 'Projects', sceneName));
     
     % Notice: We loop through ObstacleTypes and use the same index for Locations
     for j = 1:numel(p.ObstacleTypes)
         for w = 1:numel(p.BehaviorTypes)
             % Build filename using index 'j' for both Type and Location
-            rrScenarios{idx} = fullfile(rrProjectPath, sprintf('/Projects/%s/Scenarios/%s_%s_%s_%s.rrscenario', ...
-                sceneName, sceneName, p.ObstacleTypes{j}, p.ObstacleLocations{j}, p.BehaviorTypes{w}));
-            idx = idx + 1;
+            scenario = fullfile(rrProjectPath, sprintf('/Projects/%s/Scenarios/%s_%s_%s_%s.rrscenario', ...
+                sceneName, sceneNameNoSpaces, p.ObstacleTypes{j}, p.ObstacleLocations{j}, p.BehaviorTypes{w}));
+            if exist(scenario, 'file')
+                rrScenarios{idx} = scenario;
+                idx = idx + 1;
+            else
+                fprintf('Warning: Skipping missing file %s\n', scenarioPath);
+            end
         end
     end
 end
@@ -79,7 +85,7 @@ set_param('ADC_RoadRunner', 'Solver', 'ode23tb');
 for m = 1:numel(rrScenarios)
     for k = 0:p.RepeatCount
         %Get Scenario Name Details
-        [~, name, ext] = fileparts(rrScenarios{m}); % fileparts returns [path, name, extension]
+        [path, name, ext] = fileparts(rrScenarios{m}); % fileparts returns [path, name, extension]
         fileNameWithOutExt = [name]; % Just scenario file name
         fileNameWithOutExt = fileNameWithOutExt(fileNameWithOutExt ~= ' ');
         fileNameWithExt = [name, ext]; % Combine scenario name and extension
@@ -94,23 +100,10 @@ for m = 1:numel(rrScenarios)
             assignin('base', varNamesBus{i}, busInfoData.(varNamesBus{i}));
         end
     
-        currentScenarioPath = rrScenarios{m};
-        matchedScene = '';
-        
-        for s_idx = 1:numel(p.SceneTypes)
-            % Check for both the version with spaces and without
-            cleanName = p.SceneTypes{s_idx};
-            cleanName = cleanName(cleanName ~= ' ');
-            
-            if contains(currentScenarioPath, cleanName) || contains(currentScenarioPath, p.SceneTypes{s_idx})
-                % Use the original name from p.SceneTypes to match the folder on disk
-                matchedScene = p.SceneTypes{s_idx}; 
-                break;
-            end
-        end
+        currentScenarioPath = [path];
     
         % Construct the path to the SPECIFIC scene project
-        rrProjectPath_Final = fullfile(rrProjectPath, 'Projects', matchedScene);
+        rrProjectPath_Final = fullfile(fileparts(currentScenarioPath));
         
         % Verify the path exists before calling roadrunner()
         if ~exist(rrProjectPath_Final, 'dir')
@@ -145,9 +138,10 @@ for m = 1:numel(rrScenarios)
         % 1 2 3 4 ... 10 11 12: display values to check execution in helperSLAEBWithRRSetup script
         helperSLAEBWithRRSetup(rrApp, rrSim, scenarioFileName=fileNameWithOutExt)  % read scenario and create actorProfiles,cameraParams,radarParams
 %% Simulation
-        
+        assignin('base', 'ps', [0, 0, 0]);
         set(rrSim,SimulationCommand="Start")
         while strcmp(rrSim.get("SimulationStatus"), "Running")
+          assignin('base', 'ps', [0, 0, 0]);
           pause(1)
         end
     
