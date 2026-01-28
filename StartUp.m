@@ -61,7 +61,8 @@ fails = repmat(struct('RunID', [], ...
                  'LanePosition', [], ...
                  'Acceleration', [], ...
                  'Curvature', [], ...
-                 'Jerk', []), 1, n);
+                 'Jerk', [],...
+                 'CollisionDetection', []), 1, n);
 
 %% Open Model
 
@@ -144,6 +145,7 @@ for m = 1:numel(rrScenarios)
     
         run('SavingSimulationData.m')
         run('CreatingPlots.m')
+        run('CollisionDetection.m')
         run('Trajectory_Smoothness.m')
     
 %% Close RoadRunner
