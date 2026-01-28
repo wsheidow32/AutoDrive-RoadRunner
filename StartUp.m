@@ -147,7 +147,7 @@ for m = 1:numel(rrScenarios)
     
         run('SavingSimulationData.m')
         run('CreatingPlots.m')
-        %run('Trajectory_Smoothness.m')
+        run('Trajectory_Smoothness.m')
     
 %% Close RoadRunner
         fprintf("Scenario " + n + " run")
