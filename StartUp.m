@@ -12,6 +12,7 @@ rrAppPath = strtrim(fileread('SelectedInstallationPath.txt'));
 addpath(rrAppPath);
 
 rrProjectPath = strtrim(fileread('SelectedProjectPath.txt'));
+addpath(fullfile(rrProjectPath, 'Projects'));
 
 % Delete Existing Plots Folder
 if exist('Plots', 'dir')
