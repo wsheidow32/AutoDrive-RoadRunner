@@ -166,11 +166,9 @@ if failFlag == 1
     fails(TotalFails).Acceleration = accelerationFlag;
     fails(TotalFails).Curvature = curvatureFlag;
     fails(TotalFails).Jerk = jerkFlag;
+    fails(TotalFails).LanePosition = laneFlag;
 end
-
 runs(n).failFlag = failFlag;
-    % Adding to Fail Matrix
-    fails(TotalFails).LanePosition = 1;
 %% =========================
 %% Local helper functions
 %% =========================
