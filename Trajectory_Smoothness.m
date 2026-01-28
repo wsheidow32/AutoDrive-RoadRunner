@@ -167,6 +167,7 @@ if failFlag == 1
     fails(TotalFails).Curvature = curvatureFlag;
     fails(TotalFails).Jerk = jerkFlag;
     fails(TotalFails).LanePosition = laneFlag;
+    fails(TotalFails).CollisionDetecion = collisionFlag;
 end
 runs(n).failFlag = failFlag;
 %% =========================
