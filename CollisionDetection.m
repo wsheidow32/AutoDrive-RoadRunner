@@ -4,6 +4,7 @@ actorB = 2;
 
 THRESH_FT = 3;
 THRESH_M  = THRESH_FT * 0.3048; % 0.9144 m
+collisionFlag = 0;
 
 %% ---- Workspace inputs (safe defaults) ----
 if exist('folderName','var') ~= 1 || isempty(folderName)
@@ -64,6 +65,8 @@ t1 = min(tA(end), tB(end));
 if t1 <= t0
     PassFail = 'Fail';
     outDir = failDir;
+    failFlag = 1;
+    CollisionFlag = 1;
 
     fig = figure('Visible','off');
     axis off;
