@@ -21,9 +21,6 @@ if exist('rrSim','var') ~= 1
     error("TrajectorySmoothnessPlots_Actor1.m requires rrSim in workspace.");
 end
 
-mkdir(folderName, PassFolder);
-mkdir(folderName, FailFolder);
-
 passDir = fullfile(folderName, PassFolder);
 failDir = fullfile(folderName, FailFolder);
 
