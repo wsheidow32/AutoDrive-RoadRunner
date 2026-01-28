@@ -50,9 +50,7 @@ runs(n).RunID = n;
 runs(n).scenario = fileNameWithOutExt;
 runs(n).TotalActors = actorIDs;
 runs(n).results = results;
-runs(n).failFlag = failFlag;
 
 results_plots = runs(n).results;
 numActors_plots = numel(results_plots);
 actorIDs_plots  = [results_plots.ActorID];
-
