@@ -1,3 +1,4 @@
+%% ---- inputs ---- 
 targetActorID = 1;
 
 if exist('folderName','var') ~= 1 || isempty(folderName)
@@ -24,36 +25,70 @@ end
 passDir = fullfile(folderName, PassFolder);
 failDir = fullfile(folderName, FailFolder);
 
-%% ---- Thresholds (strict fail: ANY exceedance fails) ----
+%% ---- Thresholds (strict: any exceedance => FAIL) ----
 A_LON = 1.47;  % m/s^2
 A_LAT = 2.16;  % m/s^2
 JERK  = 1.00;  % m/s^3
+KAPPA = 0.15;  % 1/m
 DKDS  = 1.18;  % 1/m^2
 
 %% ---- Compute signals ----
 simLog = rrSim.get("SimulationLog");
 sig = compute_smoothness_signals_local(simLog, targetActorID);
-
-viol_a_lon = nnz(abs(sig.alon)  > A_LON);
-viol_a_lat = nnz(abs(sig.alat)  > A_LAT);
-viol_jerk  = nnz(abs(sig.jerk)  > JERK);
-viol_dkds  = nnz(abs(sig.dkds)  > DKDS);
-
-smoothFail = (viol_a_lon > 0) || (viol_a_lat > 0) || (viol_jerk > 0) || (viol_dkds > 0);
-
-PassFailSmooth = 'Pass';
-outDir = passDir;
-if smoothFail
-    PassFailSmooth = 'Fail';
-    outDir = failDir;
-end
-
-fprintf("\nTrajectory Smoothness (Actor %d): %s | viol(a_lon)=%d viol(a_lat)=%d viol(jerk)=%d viol(dkds)=%d\n", ...
-    targetActorID, PassFailSmooth, viol_a_lon, viol_a_lat, viol_jerk, viol_dkds);
-
 t = sig.t;
 
-%% ---- Plot 1: Longitudinal Acceleration ( acceleration along vehicle's forward direction) ----
+%% ---- Independent evaluations ----
+% 1) a_lon
+viol_a_lon = nnz(abs(sig.alon) > A_LON);
+if viol_a_lon == 0
+    pf_a_lon = 'Pass';
+    dir_a_lon = passDir;
+else
+    pf_a_lon = 'Fail';
+    dir_a_lon = failDir;
+end
+
+% 2) a_lat
+viol_a_lat = nnz(abs(sig.alat) > A_LAT);
+if viol_a_lat == 0
+    pf_a_lat = 'Pass';
+    dir_a_lat = passDir;
+else
+    pf_a_lat = 'Fail';
+    dir_a_lat = failDir;
+end
+
+% 3) jerk
+viol_jerk = nnz(abs(sig.jerk) > JERK);
+if viol_jerk == 0
+    pf_jerk = 'Pass';
+    dir_jerk = passDir;
+else
+    pf_jerk = 'Fail';
+    dir_jerk = failDir;
+end
+
+% 4) curvature kappa
+viol_kappa = nnz(abs(sig.kappa) > KAPPA);
+if viol_kappa == 0
+    pf_kappa = 'Pass';
+    dir_kappa = passDir;
+else
+    pf_kappa = 'Fail';
+    dir_kappa = failDir;
+end
+
+% 5) curvature rate dkds
+viol_dkds = nnz(abs(sig.dkds) > DKDS);
+if viol_dkds == 0
+    pf_dkds = 'Pass';
+    dir_dkds = passDir;
+else
+    pf_dkds = 'Fail';
+    dir_dkds = failDir;
+end
+
+%% ---- Plot 1: Longitudinal Acceleration ----
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.alon, 'LineWidth', 1.5);
@@ -61,10 +96,10 @@ yline(+A_LON, '--', 'thr +'); yline(-A_LON, '--', 'thr -');
 title("Trajectory Smoothness - Long Accel | Run " + n)
 xlabel("Time (s)")
 ylabel("a_{lon} (m/s^2)")
-saveas(fig, fullfile(outDir, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_LongAccel_', PassFailSmooth, '.png']));
+saveas(fig, fullfile(dir_a_lon, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_LongAccel_', pf_a_lon, '.png']));
 close(fig);
 
-%% ---- Plot 2: Lateral Acceleration (side-to-side accceleration / ~ corning force) ----
+%% ---- Plot 2: Lateral Acceleration ----
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.alat, 'LineWidth', 1.5);
@@ -72,10 +107,10 @@ yline(+A_LAT, '--', 'thr +'); yline(-A_LAT, '--', 'thr -');
 title("Trajectory Smoothness - Lat Accel | Run " + n)
 xlabel("Time (s)")
 ylabel("a_{lat} (m/s^2)")
-saveas(fig, fullfile(outDir, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_LatAccel_', PassFailSmooth, '.png']));
+saveas(fig, fullfile(dir_a_lat, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_LatAccel_', pf_a_lat, '.png']));
 close(fig);
 
-%% ---- Plot 3: Total Jerk (how quickly acceleration changes) ----
+%% ---- Plot 3: Total Jerk ----
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.jerk, 'LineWidth', 1.5);
@@ -83,20 +118,21 @@ yline(+JERK, '--', 'thr +'); yline(-JERK, '--', 'thr -');
 title("Trajectory Smoothness - Jerk | Run " + n)
 xlabel("Time (s)")
 ylabel("jerk (m/s^3)")
-saveas(fig, fullfile(outDir, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_Jerk_', PassFailSmooth, '.png']));
+saveas(fig, fullfile(dir_jerk, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_Jerk_', pf_jerk, '.png']));
 close(fig);
 
-%% ---- Plot 4: Curvature κ (road-wheel steering angle / how much you're turning per meter) ----
+%% ---- Plot 4: Curvature κ ----
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.kappa, 'LineWidth', 1.5);
+yline(+KAPPA, '--', 'thr +'); yline(-KAPPA, '--', 'thr -');
 title("Trajectory Smoothness - Curvature | Run " + n)
 xlabel("Time (s)")
 ylabel("\kappa (1/m)")
-saveas(fig, fullfile(outDir, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_Curvature_', PassFailSmooth, '.png']));
+saveas(fig, fullfile(dir_kappa, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_Curvature_', pf_kappa, '.png']));
 close(fig);
 
-%% ---- Plot 5: Curvature Rate dκ/ds (steering rate per meter traveled / how quickly steering is changing as u move forward) ----
+%% ---- Plot 5: Curvature Rate dκ/ds ----
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.dkds, 'LineWidth', 1.5);
@@ -104,10 +140,12 @@ yline(+DKDS, '--', 'thr +'); yline(-DKDS, '--', 'thr -');
 title("Trajectory Smoothness - Curvature Rate | Run " + n)
 xlabel("Time (s)")
 ylabel("d\kappa/ds (1/m^2)")
-saveas(fig, fullfile(outDir, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_CurvatureRate_', PassFailSmooth, '.png']));
+saveas(fig, fullfile(dir_dkds, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_CurvatureRate_', pf_dkds, '.png']));
 close(fig);
 
-%% ---- Local helper functions ----
+%% =========================
+%% Local helper functions
+%% =========================
 function sig = compute_smoothness_signals_local(simLog, actorID)
 vLog = get(simLog, "Velocity", "ActorID", actorID);
 pLog = get(simLog, "Pose",     "ActorID", actorID);
