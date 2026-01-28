@@ -38,12 +38,8 @@ for i = 1:numel(p.SceneTypes)
             % Build filename using index 'j' for both Type and Location
             scenario = fullfile(rrProjectPath, sprintf('/Projects/%s/Scenarios/%s_%s_%s_%s.rrscenario', ...
                 sceneName, sceneNameNoSpaces, p.ObstacleTypes{j}, p.ObstacleLocations{j}, p.BehaviorTypes{w}));
-            if exist(scenario, 'file')
-                rrScenarios{idx} = scenario;
-                idx = idx + 1;
-            else
-                fprintf('Warning: Skipping missing file %s\n', scenarioPath);
-            end
+            rrScenarios{idx} = scenario;
+            idx = idx + 1;
         end
     end
 end
