@@ -1,5 +1,8 @@
 %% ---- inputs ---- 
 targetActorID = 1;
+accelerationFlag = 0;
+curvatureFlag = 0;
+jerkFlag = 0;
 
 if exist('folderName','var') ~= 1 || isempty(folderName)
     folderName = 'Plots';
@@ -46,6 +49,8 @@ if viol_a_lon == 0
 else
     pf_a_lon = 'Fail';
     dir_a_lon = failDir;
+    accelerationFlag = 1;
+    failFlag = 1;
 end
 
 % 2) a_lat
@@ -56,6 +61,8 @@ if viol_a_lat == 0
 else
     pf_a_lat = 'Fail';
     dir_a_lat = failDir;
+    accelerationFlag = 1;
+    failFlag = 1;
 end
 
 % 3) jerk
@@ -66,6 +73,8 @@ if viol_jerk == 0
 else
     pf_jerk = 'Fail';
     dir_jerk = failDir;
+    jerkFlag = 1;
+    failFlag = 1;
 end
 
 % 4) curvature kappa
@@ -76,6 +85,8 @@ if viol_kappa == 0
 else
     pf_kappa = 'Fail';
     dir_kappa = failDir;
+    curvatureFlag = 1;
+    failFlag = 1;
 end
 
 % 5) curvature rate dkds
@@ -86,6 +97,8 @@ if viol_dkds == 0
 else
     pf_dkds = 'Fail';
     dir_dkds = failDir;
+    curvatureFlag = 1;
+    failFlag = 1;
 end
 
 %% ---- Plot 1: Longitudinal Acceleration ----
@@ -143,6 +156,19 @@ ylabel("d\kappa/ds (1/m^2)")
 saveas(fig, fullfile(dir_dkds, [char(fileNameWithOutExt), '_', num2str(n), '_Smoothness_CurvatureRate_', pf_dkds, '.png']));
 close(fig);
 
+% If FailFlag has been triggered data will be saved
+if failFlag == 1
+    TotalFails = TotalFails + 1;
+    fails(TotalFails).RunID = n;
+    fails(TotalFails).scenario = fileNameWithOutExt;
+    fails(TotalFails).TotalActors = actorIDs;
+    fails(TotalFails).results = results;
+    fails(TotalFails).Acceleration = accelerationFlag;
+    fails(TotalFails).Curvature = curvatureFlag;
+    fails(TotalFails).Jerk = jerkFlag;
+    fails(TotalFails).LanePosition = laneFlag;
+end
+runs(n).failFlag = failFlag;
 %% =========================
 %% Local helper functions
 %% =========================

@@ -81,21 +81,19 @@ grid on;
 xlabel('Time (s)');
 ylabel('Position Error (m)');
 title('Position Error vs Time');
-yline(0.3, 'r', 'Threshold Value', 'LabelHorizontalAlignment', 'left');
+yline(0.3, 'r', 'Threshold Value');
+
+% Variable to Save Fail
+failFlag = 0;
+laneFlag = 0;
 
 % Checking Threshold
 if any(abs(PositionError.Data) > 0.3)
     PassFail = 'Fail';
     failFlag = 1;
-
-    % Adding to Fail Matrix
-    TotalFails = TotalFails + 1;
-    fails(TotalFails).LanePosition = 1;
-
+    laneFlag = 1;
 else
     PassFail = 'Pass';
 end
-
-runs(n).failFlag = failFlag;
 
 saveas(fig, fullfile(fullfile(folderName, PassFail), [fileNameWithOutExt, '_', num2str(n), '_LanePosition_', PassFail, '.png']));
