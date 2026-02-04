@@ -1,6 +1,7 @@
 %% ---- inputs ---- 
 targetActorID = 1;
-accelerationFlag = 0;
+longaccelerationFlag = 0;
+lataccelerationFlag = 0;
 curvatureFlag = 0;
 jerkFlag = 0;
 
@@ -49,7 +50,7 @@ if viol_a_lon == 0
 else
     pf_a_lon = 'Fail';
     dir_a_lon = failDir;
-    accelerationFlag = 1;
+    longaccelerationFlag = 1;
     failFlag = 1;
 end
 
@@ -61,7 +62,7 @@ if viol_a_lat == 0
 else
     pf_a_lat = 'Fail';
     dir_a_lat = failDir;
-    accelerationFlag = 1;
+    lataccelerationFlag = 1;
     failFlag = 1;
 end
 
@@ -105,7 +106,7 @@ end
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.alon, 'LineWidth', 1.5);
-yline(+A_LON, '--', 'thr +'); yline(-A_LON, '--', 'thr -');
+yline(+A_LON, 'r', '--', 'Label', 'threshold +'); yline(-A_LON, 'r', '--', 'Label', 'threshold -');
 title("Trajectory Smoothness - Long Accel | Run " + n)
 xlabel("Time (s)")
 ylabel("a_{lon} (m/s^2)")
@@ -116,7 +117,7 @@ close(fig);
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.alat, 'LineWidth', 1.5);
-yline(+A_LAT, '--', 'thr +'); yline(-A_LAT, '--', 'thr -');
+yline(+A_LAT, 'r', '--', 'Label', 'threshold +'); yline(-A_LAT, 'r', '--', 'Label', 'threshold -');
 title("Trajectory Smoothness - Lat Accel | Run " + n)
 xlabel("Time (s)")
 ylabel("a_{lat} (m/s^2)")
@@ -127,7 +128,7 @@ close(fig);
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.jerk, 'LineWidth', 1.5);
-yline(+JERK, '--', 'thr +'); yline(-JERK, '--', 'thr -');
+yline(+JERK, 'r', '--', 'Label', 'threshold +'); yline(-JERK, 'r', '--', 'Label', 'threshold -');
 title("Trajectory Smoothness - Jerk | Run " + n)
 xlabel("Time (s)")
 ylabel("jerk (m/s^3)")
@@ -138,7 +139,7 @@ close(fig);
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.kappa, 'LineWidth', 1.5);
-yline(+KAPPA, '--', 'thr +'); yline(-KAPPA, '--', 'thr -');
+yline(+KAPPA, 'r', '--', 'Label', 'threshold +'); yline(-KAPPA, 'r', '--', 'Label', 'threshold -');
 title("Trajectory Smoothness - Curvature | Run " + n)
 xlabel("Time (s)")
 ylabel("\kappa (1/m)")
@@ -149,7 +150,7 @@ close(fig);
 fig = figure('Visible','off');
 hold on; grid on;
 plot(t, sig.dkds, 'LineWidth', 1.5);
-yline(+DKDS, '--', 'thr +'); yline(-DKDS, '--', 'thr -');
+yline(+DKDS, 'r', '--', 'Label', 'threshold +'); yline(-DKDS, 'r', '--', 'Label', 'threshold -');
 title("Trajectory Smoothness - Curvature Rate | Run " + n)
 xlabel("Time (s)")
 ylabel("d\kappa/ds (1/m^2)")
@@ -163,7 +164,8 @@ if failFlag == 1
     fails(TotalFails).scenario = fileNameWithOutExt;
     fails(TotalFails).TotalActors = actorIDs;
     fails(TotalFails).results = results;
-    fails(TotalFails).Acceleration = accelerationFlag;
+    fails(TotalFails).LongitudinalAcceleration = longaccelerationFlag;
+    fails(TotalFails).LateralAcceleration = lataccelerationFlag;
     fails(TotalFails).Curvature = curvatureFlag;
     fails(TotalFails).Jerk = jerkFlag;
     fails(TotalFails).LanePosition = laneFlag;

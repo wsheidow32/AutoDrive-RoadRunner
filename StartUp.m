@@ -1,7 +1,6 @@
-%clear; close; clc;
-clc;
+clear; close; clc;
 restoredefaultpath;
-%hello
+
 %% Initialize Values
 
 project_start; % calls car_params.mlx
@@ -9,7 +8,7 @@ p = load('parameter.mat');
 assignin('base', 'p', p);
 
 rrAppPath = strtrim(fileread('SelectedInstallationPath.txt'));
-addpath(rrAppPath);
+addpath(genpath(rrAppPath));
 
 rrProjectPath = strtrim(fileread('SelectedProjectPath.txt'));
 addpath(fullfile(rrProjectPath, 'Projects'));
@@ -59,7 +58,8 @@ fails = repmat(struct('RunID', [], ...
                  'TotalActors',  [], ...
                  'results',   [], ...
                  'LanePosition', [], ...
-                 'Acceleration', [], ...
+                 'LongitudinalAcceleration', [], ...
+                 'LateralAcceleration', [], ...
                  'Curvature', [], ...
                  'Jerk', [],...
                  'CollisionDetection', []), 1, n);
@@ -111,18 +111,21 @@ for m = 1:numel(rrScenarios)
         rrApp = roadrunner(rrProjectPath_Final);
     
         openScenario(rrApp,fileNameWithExt);
-        rrSim = rrApp.createSimulation;
+
+        %set Actor 2 if GUI wants random placement
+        if p.Randomize
+            %random_actor_generation;
+        end
+        
 %% RoadRunner Scenario Data, Simulation Time
-    
+        rrSim = rrApp.createSimulation;
+        
         set(rrSim, 'Logging','on');
         
         SimulationLength = 15;
         set(rrSim, MaxSimulationTime=SimulationLength);
         
-        %set Actor 2 if GUI wants random placement
-        if p.Randomize
-            %random_actor_generation;
-        end
+        
         
         Ts = 0.05; 
         STEER_RATIO = -0.0582;
@@ -156,3 +159,6 @@ for m = 1:numel(rrScenarios)
         n = n + 1;
     end
 end
+
+%% Open Results Gallery
+    app = RR_END;

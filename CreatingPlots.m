@@ -24,7 +24,9 @@ title("Actor Speeds from RoadRunner Scenario | Run " + n)
 xlabel("Time (s)")
 ylabel("Velocity (m/s)")
 if ~isempty(actorIDs_plots)
-    legend(compose("Actor ID = %d", actorIDs_plots), 'Location','best')
+    temp = actorIDs_plots(2:end);
+    labels = ["AutoDrive Car", compose("Actor ID = %d", temp)];
+    legend(labels, 'Location', 'best')
 end
 
 % Save the plot as a PNG file
@@ -65,7 +67,8 @@ xlabel("X (m)"); ylabel("Y (m)")
 
 % Create legend with lanes and actors
 if ~isempty(laneHandle) && numActors_plots > 0
-    legend([laneHandle; hActors], ["Lanes", compose("Actor ID = %d", actorIDs_plots)], ...
+    temp = actorIDs_plots(2:end);
+    legend([laneHandle; hActors], ["Lanes", "AutoDrive Car", compose("Actor ID = %d", temp)], ...
         'Location','bestoutside');
 end
 
@@ -81,14 +84,14 @@ grid on;
 xlabel('Time (s)');
 ylabel('Position Error (m)');
 title('Position Error vs Time');
-yline(0.3, 'r', 'Threshold Value');
+yline(0.2, 'r', 'threshold');
 
 % Variable to Save Fail
 failFlag = 0;
 laneFlag = 0;
 
 % Checking Threshold
-if any(abs(PositionError.Data) > 0.3)
+if any(abs(PositionError.Data) > 0.2)
     PassFail = 'Fail';
     failFlag = 1;
     laneFlag = 1;
