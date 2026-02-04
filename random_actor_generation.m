@@ -1,10 +1,7 @@
-rrApp = roadrunner("C:\GitHub\AutoDrive-RoadRunner\Projects");
-rrSim = createSimulation(rrApp);
-
 if contains(fileNameWithOutExt, "FourWayLight")
 
-pedAsset = roadrunner.Asset('Four_Way_Light/Assets/Characters/Citizen_Male.fbx');
-carAsset = roadrunner.Asset('Four_Way_Light/Assets/Vehicles/Sedan.fbx');
+pedAsset = roadrunner.Asset('Four Way Light/Assets/Characters/Citizen_Male.rrchar');
+carAsset = roadrunner.Asset('Four Way Light/Assets/Vehicles/Sedan.fbx');
 
 if contains(fileNameWithOutExt, "Pedestrian")
 if contains(fileNameWithOutExt, "Close")
@@ -55,8 +52,8 @@ setActorOrientation(newCar, carYieldDegrees);
 end
 else 
 
-pedAsset = roadrunner.Asset('Four_Way_Stop/Assets/Characters/Citizen_Male.fbx');
-carAsset = roadrunner.Asset('Four_Way_Stop/Assets/Vehicles/Sedan.fbx');
+pedAsset = 'Four Way Stop/Assets/Characters/Citizen_Male.rrchar';
+carAsset = 'Four Way Stop/Assets/Vehicles/Sedan.fbx';
 
 if contains(fileNameWithOutExt, "Pedestrian")
 if contains(fileNameWithOutExt, "Close")
@@ -80,7 +77,7 @@ pedestrianDegrees = -180;
 end
 end
 
-newPed = addActor(rrSim.Scenario, pedAsset, pedestrianPosition);
+newPed = addActor(rrSim, pedAsset, pedestrianPosition);
 setActorOrientation(newPed, pedestrianDegrees);
 
 elseif contains(fileNameWithOutExt, "CarYield")
@@ -104,6 +101,7 @@ end
 
 newCar = addActor(rrSim.Scenario, carAsset, carYieldPosition);
 setActorOrientation(newCar, carYieldDegrees);
+
 end
 
 end
