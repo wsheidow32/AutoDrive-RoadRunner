@@ -89,6 +89,11 @@ for m = 1:numel(rrScenarios)
         fileNameWithExt = [name, ext]; % Combine scenario name and extension
         fileNameWithExt = fileNameWithExt(fileNameWithExt ~= ' ');
     
+        % Changing to Scenario without Actor 1
+        if p.Randomize
+            fileNameWithOutExt = [fileNameWithOutExt  '_RAG'];
+            fileNameWithExt = [fileNameWithOutExt  '.rrscenario'];
+        end
         s = settings;
         s.roadrunner.application.InstallationFolder.TemporaryValue = rrAppPath;
     
@@ -107,14 +112,15 @@ for m = 1:numel(rrScenarios)
         if ~exist(rrProjectPath_Final, 'dir')
             error('Project folder not found: %s. Check if folder name matches GUI selection.', rrProjectPath_Final);
         end
-    
+   
         rrApp = roadrunner(rrProjectPath_Final);
     
         openScenario(rrApp,fileNameWithExt);
-
+        
         %set Actor 2 if GUI wants random placement
         if p.Randomize
-            %random_actor_generation;
+            run('RandomActorGeneration.m')
+            fileNameWithOutExt = [fileNameWithOutExt '_Blank'];
         end
         
 %% RoadRunner Scenario Data, Simulation Time
@@ -146,6 +152,10 @@ for m = 1:numel(rrScenarios)
           pause(1)
         end
     
+        if p.Randomize
+            fileNameWithOutExt = erase(fileNameWithOutExt,'_Blank')
+        end
+
         run('SavingSimulationData.m')
         run('CreatingPlots.m')
         run('CollisionDetection.m')
@@ -161,4 +171,4 @@ for m = 1:numel(rrScenarios)
 end
 
 %% Open Results Gallery
-    app = RR_END;
+    ResultsSelection
