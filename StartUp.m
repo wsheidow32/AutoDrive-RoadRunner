@@ -88,7 +88,7 @@ for m = 1:numel(rrScenarios)
         fileNameWithOutExt = fileNameWithOutExt(fileNameWithOutExt ~= ' ');
         fileNameWithExt = [name, ext]; % Combine scenario name and extension
         fileNameWithExt = fileNameWithExt(fileNameWithExt ~= ' ');
-    
+
         % Changing to Scenario without Actor 1
         if p.Randomize
             fileNameWithOutExt = [fileNameWithOutExt  '_RAG'];
@@ -116,7 +116,7 @@ for m = 1:numel(rrScenarios)
         rrApp = roadrunner(rrProjectPath_Final);
     
         openScenario(rrApp,fileNameWithExt);
-        
+
         %set Actor 2 if GUI wants random placement
         if p.Randomize
             run('RandomActorGeneration.m')
@@ -141,7 +141,6 @@ for m = 1:numel(rrScenarios)
         assignin('base', 'STEER_RATIO', STEER_RATIO);
         assignin('base', 'LaneWidth', LaneWidth);
         
-        
         % 1 2 3 4 ... 10 11 12: display values to check execution in helperSLAEBWithRRSetup script
         helperSLAEBWithRRSetup(rrApp, rrSim, scenarioFileName=fileNameWithOutExt)  % read scenario and create actorProfiles,cameraParams,radarParams
 %% Simulation
@@ -153,7 +152,7 @@ for m = 1:numel(rrScenarios)
         end
     
         if p.Randomize
-            fileNameWithOutExt = erase(fileNameWithOutExt,'_Blank')
+            fileNameWithOutExt = erase(fileNameWithOutExt,'_Blank');
         end
 
         run('SavingSimulationData.m')

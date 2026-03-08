@@ -3,161 +3,47 @@ exportScenario(rrApp, fileNameWithOutExt, "OpenSCENARIO")
 xoscPath = fullfile(rrProjectPath_Final, "Exports", fileNameWithOutExt + ".xosc");
 ExportedFile = fileread(xoscPath);
 
-% Checking if Car Scenario
+% Checking if Car Straight Scenario
 if contains(fileNameWithOutExt, "NoObstacle")
-    if contains(fileNameWithOutExt, "Straight")
-        newX = randi([-50 50])
+    if contains(fileNameWithOutExt, "Straight") || contains(fileNameWithOutExt, "Right")
+        newX = randi([-50 0]);
         replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
             '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
             '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
             '</Position>'], newX);
         pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
         FileWithRandom = regexprep(ExportedFile, pattern, replacement);
+    else
+       newY = randi([0 50]);
+        replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
+            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
+            '<Position>\n\t\t\t\t\t<WorldPosition h="1.5708" p="0" r="0" x="2.754790" y="%f" z="0.066688"/>\n\t\t\t\t\t\t\t'...
+            '</Position>'], newY);
+        pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
+        FileWithRandom = regexprep(ExportedFile, pattern, replacement); 
     end
 end
 
+% Checking if Parallel
 if contains(fileNameWithOutExt, "Parrallel")
-    if contains(fileNameWithOutExt, "Straight")
-        newX = randi([-50 50])
+        newY = randi([-50 70]);
         replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
             '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
+            '<Position>\n\t\t\t\t\t<WorldPosition h="-1.5708" p="0" r="0" x="-1.297150" y="%f" z="0.000000"/>\n\t\t\t\t\t\t\t'...
+            '</Position>'], newY);
         pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
         FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
 end
 
-if contains(fileNameWithOutExt, "Parrallel")
-    if contains(fileNameWithOutExt, "Left")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Parrallel")
-    if contains(fileNameWithOutExt, "Right")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
+% Checking if Perpendicular
 if contains(fileNameWithOutExt, "Perpendicular")
-    if contains(fileNameWithOutExt, "Straight")
-        newX = randi([-50 50])
+        newX = randi([-80 10]);
         replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
             '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
+            '<Position>\n\t\t\t\t\t<WorldPosition h="0" p="0" r="0" x="%f" y="-2.130000" z="0.000000"/>\n\t\t\t\t\t\t\t'...
             '</Position>'], newX);
         pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
         FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Perpendicular")
-    if contains(fileNameWithOutExt, "Left")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Perpendicular")
-    if contains(fileNameWithOutExt, "Right")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Sedan2">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Sedan2">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Close")
-    if contains(fileNameWithOutExt, "Left")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Close")
-    if contains(fileNameWithOutExt, "Right")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Close")
-    if contains(fileNameWithOutExt, "Straight")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Far")
-    if contains(fileNameWithOutExt, "Left")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Far")
-    if contains(fileNameWithOutExt, "Right")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
-end
-
-if contains(fileNameWithOutExt, "Far")
-    if contains(fileNameWithOutExt, "Straight")
-        newX = randi([-50 50])
-        replacement = sprintf(['<Private entityRef="Citizen_Male">\n\t\t' ...
-            '<PrivateAction>\n\t\t\t\t\t<TeleportAction>\n\t\t\t\t\t' ...
-            '<Position>\n\t\t\t\t\t<WorldPosition h="3.14159" p="0" r="0" x="%f" y="1.43420004844666" z="0.000000"/>\n\t\t\t\t\t\t\t'...
-            '</Position>'], newX);
-        pattern = ['<Private entityRef="Citizen_Male">(.*?)<PrivateAction>(.*?)<TeleportAction>(.*?)<Position>(.*?)<WorldPosition(.*?)/>(.*?)</Position>';];
-        FileWithRandom = regexprep(ExportedFile, pattern, replacement);
-    end
 end
 
 % Writing New Coordinates into File
