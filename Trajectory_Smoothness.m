@@ -99,7 +99,7 @@ if viol_dkds == 0
 else
     pf_dkds = 'Fail';
     dir_dkds = failDir;
-    curvatureFlag = 1;
+    curvaturerateFlag = 1;
     failFlag = 1;
 end
 
