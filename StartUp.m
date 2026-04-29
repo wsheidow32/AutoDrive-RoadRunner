@@ -180,4 +180,4 @@ for m = 1:numel(rrScenarios)
 end
 
 %% Open Results Gallery
-    ResultsSelection
+    RR_End
