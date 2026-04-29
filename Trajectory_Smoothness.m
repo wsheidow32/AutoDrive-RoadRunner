@@ -3,6 +3,7 @@ targetActorID = 1;
 longaccelerationFlag = 0;
 lataccelerationFlag = 0;
 curvatureFlag = 0;
+curvaturerateFlag = 0;
 jerkFlag = 0;
 
 if exist('folderName','var') ~= 1 || isempty(folderName)
@@ -98,7 +99,7 @@ if viol_dkds == 0
 else
     pf_dkds = 'Fail';
     dir_dkds = failDir;
-    curvatureFlag = 1;
+    curvaturerateFlag = 1;
     failFlag = 1;
 end
 
@@ -167,6 +168,7 @@ if failFlag == 1
     fails(TotalFails).LongitudinalAcceleration = longaccelerationFlag;
     fails(TotalFails).LateralAcceleration = lataccelerationFlag;
     fails(TotalFails).Curvature = curvatureFlag;
+    fails(TotalFails).CurvatureRate = curvaturerateFlag;
     fails(TotalFails).Jerk = jerkFlag;
     fails(TotalFails).LanePosition = laneFlag;
     fails(TotalFails).CollisionDetection = collisionFlag;
